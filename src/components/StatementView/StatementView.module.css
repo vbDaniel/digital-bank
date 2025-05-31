@@ -1,0 +1,69 @@
+
+.statementContainer {
+  padding: 1rem 0;
+}
+
+.statementContainer p {
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-size: 1rem;
+}
+
+.errorMessage {
+  color: #d32f2f;
+  background-color: #ffcdd2;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #d32f2f;
+  text-align: center;
+}
+
+.transactionList {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+.transactionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.transactionItem:last-child {
+  border-bottom: none;
+}
+
+.date {
+  font-size: 0.9rem;
+  color: #666;
+  flex-basis: 25%;
+}
+
+.description {
+  font-size: 1rem;
+  color: #333;
+  flex-basis: 50%;
+  text-align: left;
+}
+
+.amount {
+  font-size: 1rem;
+  font-weight: 500;
+  flex-basis: 25%;
+  text-align: right;
+}
+
+.credit .amount {
+  color: #2e7d32; /* Green for credit */
+}
+
+.debit .amount {
+  color: #c62828; /* Red for debit */
+}

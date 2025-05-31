@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TipoLancamento {
+  CREDITO
+  DEBITO
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  cpf       String   @unique
+  telefone  String
+  senha     String
+  contas    Conta[]
+}
+
+model Conta {
+  id        Int      @id @default(autoincrement())
+  numero    String   @unique
+  saldo     Float    @default(0)
+  cliente   Cliente  @relation(fields: [clienteId], references: [id])
+  clienteId Int
+  lancamentos Lancamento[]
+}
+
+model Lancamento {
+  id        Int      @id @default(autoincrement())
+  valor     Float
+  tipo      TipoLancamento
+  data      DateTime @default(now())
+  conta     Conta    @relation(fields: [contaId], references: [id])
+  contaId   Int
+}

@@ -1,0 +1,22 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.inputGroup label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.inputGroup input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 0.25rem;
+}

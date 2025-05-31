@@ -1,0 +1,126 @@
+import React, { useState, FormEvent } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { Account, Transaction, TransactionType } from "types";
+import styles from "./TransactionForm.module.css";
+import { apiCreateTransaction } from "src/app/dashboard/dash.utils";
+
+interface TransactionFormProps {
+  account: Account;
+  transactionType: TransactionType;
+  onTransactionSuccess: (
+    updatedAccount: Account,
+    transaction: Transaction
+  ) => void;
+  onClose: () => void;
+}
+
+const TransactionForm: React.FC<TransactionFormProps> = ({
+  account,
+  transactionType,
+  onTransactionSuccess,
+  onClose,
+}) => {
+  const { token } = useAuth();
+  const [amount, setAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!token) {
+      setError("Usuário não autenticado.");
+      return;
+    }
+    const value = parseFloat(amount);
+    if (isNaN(value) || value <= 0) {
+      setError("Por favor, insira um valor válido.");
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      console.log(
+        `Realizando ${transactionType} de R$ ${value.toFixed(2)} na conta ${
+          account.numero
+        }`
+      );
+
+      const { updatedAccount, transaction } = await apiCreateTransaction(
+        token,
+        account.id,
+        transactionType.toUpperCase() as "CREDITO" | "DEBITO",
+        value
+      );
+
+      onTransactionSuccess(updatedAccount, transaction);
+
+      alert(
+        `Operação de ${
+          transactionType === TransactionType.CREDITO ? "depósito" : "saque"
+        } de R$ ${value.toFixed(2)} realizada com sucesso!`
+      );
+      onClose();
+    } catch (err: any) {
+      setError(
+        err.message ||
+          `Erro ao realizar ${
+            transactionType === TransactionType.CREDITO ? "depósito" : "saque"
+          }.`
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <p>
+        Conta selecionada: <strong>{account.numero}</strong>
+      </p>
+      <p>
+        Saldo atual: <strong>R$ {account.saldo.toFixed(2)}</strong>
+      </p>
+      <div className={styles.inputGroup}>
+        <label htmlFor="amount">
+          Valor do{" "}
+          {transactionType === TransactionType.CREDITO ? "Depósito" : "Saque"}:
+        </label>
+        <input
+          type="number"
+          id="amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          min="0.01"
+          step="0.01"
+          required
+          placeholder="0,00"
+          className={styles.inputField}
+        />
+      </div>
+      {error && <p className={styles.errorMessage}>{error}</p>}
+      <div className={styles.buttonGroup}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`${styles.button} ${styles.confirmButton}`}
+        >
+          {isLoading
+            ? "Processando..."
+            : transactionType === TransactionType.CREDITO
+            ? "Confirmar Depósito"
+            : "Confirmar Saque"}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={isLoading}
+          className={`${styles.button} ${styles.cancelButton}`}
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default TransactionForm;

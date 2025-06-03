@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Account, Transaction, TransactionType } from "types";
 import styles from "./StatementView.module.css";
 import { apiGetStatement } from "src/app/dashboard/dash.utils";
+import { formatReais } from "utils/format";
 
 interface StatementViewProps {
   account: Account;
@@ -13,6 +14,9 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState<"all" | TransactionType>("all");
 
   useEffect(() => {
     const fetchStatement = async () => {
@@ -26,7 +30,7 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
         const statementData = await apiGetStatement(token, account.id);
         setTransactions(statementData);
       } catch (err: any) {
-        setError(err.message || "Erro ao buscar extrato.");
+        setError("Erro ao buscar extrato.");
       } finally {
         setIsLoading(false);
       }
@@ -35,48 +39,95 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
     fetchStatement();
   }, [account.id, token]);
 
+  const filteredTransactions = transactions.filter((tx) => {
+    if (
+      filterType !== "all" &&
+      tx.tipo.toLowerCase() !== filterType.toLowerCase()
+    ) {
+      return false;
+    }
+
+    if (search.trim() === "") return true;
+
+    if (formatReais(tx.valor).includes(search)) return true;
+
+    const dataStr = new Date(tx.data).toLocaleDateString("pt-BR");
+    if (dataStr.includes(search)) return true;
+
+    return false;
+  });
+
   return (
     <div className={styles.statementContainer}>
       <p>
         Conta: <strong>{account.numero}</strong>
       </p>
       <p>
-        Saldo Atual: <strong>R$ {account.saldo.toFixed(2)}</strong>
+        Saldo Atual: <strong>{formatReais(account.saldo)}</strong>
       </p>
-      {isLoading && <p>Carregando extrato...</p>}
-      {error && <p className={styles.errorMessage}>{error}</p>}
-      {!isLoading &&
-        !error &&
-        (transactions.length === 0 ? (
-          <p>Nenhuma transação encontrada para esta conta.</p>
-        ) : (
-          <ul className={styles.transactionList}>
-            {transactions.map((tx) => (
-              <li
-                key={tx?.id}
-                className={`${styles.transactionItem} ${
-                  tx.tipo === TransactionType.CREDITO
-                    ? styles.credit
-                    : styles.debit
-                }`}
-              >
-                <span className={styles.date}>
-                  {new Date(tx.data).toLocaleDateString("pt-BR")}
-                </span>
-                <span className={styles.description}>
-                  {tx.descricao ||
-                    (tx.tipo === TransactionType.CREDITO
-                      ? "Crédito"
-                      : "Débito")}
-                </span>
-                <span className={styles.amount}>
-                  {tx.tipo === TransactionType.DEBITO ? "-" : "+"} R${" "}
-                  {tx.valor.toFixed(2)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ))}
+      <div className={styles.filters}>
+        <input
+          type="text"
+          placeholder="Pesquisar por valor ou data"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={styles.searchInput}
+        />
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value as any)}
+          className={styles.typeSelect}
+        >
+          <option value="all">Todos</option>
+          <option value={TransactionType.CREDITO}>Crédito</option>
+          <option value={TransactionType.DEBITO}>Débito</option>
+        </select>
+      </div>
+      <div className={styles.transactionsList}>
+        {isLoading && <p>Carregando extrato...</p>}
+        {error && <p className={styles.errorMessage}>{error}</p>}
+        {!isLoading &&
+          !error &&
+          (filteredTransactions.length === 0 ? (
+            <p>Nenhuma transação encontrada para esta conta.</p>
+          ) : (
+            <ul className={styles.transactionList}>
+              {filteredTransactions.map((tx) => (
+                <li
+                  key={tx?.id}
+                  className={`${styles.transactionItem} ${
+                    tx.tipo.toLocaleLowerCase() === TransactionType.CREDITO
+                      ? styles.credit
+                      : styles.debit
+                  }`}
+                >
+                  <span className={styles.date}>
+                    {new Date(tx.data).toLocaleString("pt-BR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
+                  </span>
+                  <span className={styles.description}>
+                    {tx.descricao ||
+                      (tx.tipo.toLocaleLowerCase() === TransactionType.CREDITO
+                        ? "Crédito"
+                        : "Débito")}
+                  </span>
+                  <span className={styles.amount}>
+                    {tx.tipo.toLocaleLowerCase() === TransactionType.DEBITO
+                      ? "- "
+                      : "+ "}
+                    {formatReais(tx.valor)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ))}
+      </div>
     </div>
   );
 };

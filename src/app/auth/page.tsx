@@ -94,7 +94,7 @@ const AuthPage: React.FC = () => {
         login(cliente, token);
       }
     } catch (err: any) {
-      setError(err.message || "Ocorreu um erro.");
+      setError("Ocorreu um erro. Por favor, tente novamente.");
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +114,7 @@ const AuthPage: React.FC = () => {
       </Head>
       <div className={styles.authContainer}>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.authForm}>
-          <h1>{isLogin ? "Acessar Conta" : "Criar Conta"}</h1>
+          <h1>{isLogin ? "Acessar Perfil" : "Criar Perfil"}</h1>
           {error && <p className={styles.errorMessage}>{error}</p>}
 
           {/* Cadastro: Nome */}

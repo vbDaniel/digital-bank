@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Account, Transaction, TransactionType } from "types";
 import styles from "./TransactionForm.module.css";
 import { apiCreateTransaction } from "src/app/dashboard/dash.utils";
+import { formatReais } from "utils/format";
 
 interface TransactionFormProps {
   account: Account;
@@ -39,12 +40,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     setIsLoading(true);
     setError(null);
     try {
-      console.log(
-        `Realizando ${transactionType} de R$ ${value.toFixed(2)} na conta ${
-          account.numero
-        }`
-      );
-
       const { updatedAccount, transaction } = await apiCreateTransaction(
         token,
         account.id,
@@ -57,15 +52,14 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       alert(
         `Operação de ${
           transactionType === TransactionType.CREDITO ? "depósito" : "saque"
-        } de R$ ${value.toFixed(2)} realizada com sucesso!`
+        } de ${formatReais(value)} realizada com sucesso!`
       );
       onClose();
     } catch (err: any) {
       setError(
-        err.message ||
-          `Erro ao realizar ${
-            transactionType === TransactionType.CREDITO ? "depósito" : "saque"
-          }.`
+        `Erro ao realizar ${
+          transactionType === TransactionType.CREDITO ? "depósito" : "saque"
+        }.`
       );
     } finally {
       setIsLoading(false);
@@ -78,7 +72,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         Conta selecionada: <strong>{account.numero}</strong>
       </p>
       <p>
-        Saldo atual: <strong>R$ {account.saldo.toFixed(2)}</strong>
+        Saldo atual: <strong>{formatReais(account.saldo)}</strong>
       </p>
       <div className={styles.inputGroup}>
         <label htmlFor="amount">

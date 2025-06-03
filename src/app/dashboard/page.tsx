@@ -10,63 +10,81 @@ import { Account, Transaction, TransactionType } from "../../../types";
 
 import Navbar from "@/components/Navbar/Navbar";
 import AccountCard from "@/components/AccountCard/AccountCard";
-import Modal from "@/components/Modal/Modal";
+import Modal from "src/components/modals/Modal/Modal";
 import NewAccountForm from "@/components/NewAccountForm/NewAccountForm";
 import TransactionForm from "@/components/TransactionForm/TransactionForm";
 import StatementView from "@/components/StatementView/StatementView";
 
 import styles from "./page.module.css";
 import { apiGetAccounts } from "./dash.utils";
+import DeleteAccountModal from "src/components/DeleteAccountModal/DeleteAccountModal";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-type ModalType = "newAccount" | "deposit" | "withdraw" | "statement" | null;
+type ModalType =
+  | "newAccount"
+  | "deleteAccount"
+  | "deposit"
+  | "withdraw"
+  | "statement"
+  | null;
 
 const DashboardPage: React.FC = () => {
   const { user, token, isLoading: authLoading, logout } = useAuth();
   const router = useRouter();
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [isLoadingAccounts, setIsLoadingAccounts] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
-  const fetchAccounts = useCallback(async () => {
-    if (user && token) {
-      setIsLoadingAccounts(true);
-      setError(null);
-      try {
-        const userAccounts = await apiGetAccounts(token);
-        setAccounts(userAccounts);
-      } catch (err: any) {
-        setError(err.message || "Erro ao buscar contas.");
-      } finally {
-        setIsLoadingAccounts(false);
-      }
-    }
-  }, [user, token]);
+  const queryClient = useQueryClient();
+
+  const {
+    data: accounts = [],
+    isFetching,
+    isLoading: isLoadingAccounts,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: () => apiGetAccounts(token!),
+    enabled: !!user && !!token,
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.replace("/auth");
-    } else if (user) {
-      fetchAccounts();
     }
-  }, [user, authLoading, router, fetchAccounts]);
+  }, [user, authLoading, router]);
 
   const handleAccountCreated = (newAccount: Account) => {
-    setAccounts((prev) => [...prev, newAccount]);
+    queryClient.setQueryData<Account[]>(["accounts"], (oldAccounts = []) => [
+      ...oldAccounts,
+      newAccount,
+    ]);
+    setActiveModal(null);
+  };
+
+  const handleAccountDeleted = (deletedAccountId: string) => {
+    queryClient.setQueryData<Account[]>(["accounts"], (oldAccounts = []) =>
+      oldAccounts.filter((acc) => String(acc.id) !== String(deletedAccountId))
+    );
+    setActiveModal(null);
   };
 
   const handleTransactionSuccess = (
     updatedAccount: Account,
     _transaction: Transaction
   ) => {
-    setAccounts((prevAccounts) =>
-      prevAccounts.map((acc) =>
-        acc?.id === updatedAccount?.id ? updatedAccount : acc
-      )
+    queryClient.setQueryData<Account[]>(
+      ["accounts"],
+      (oldAccounts: Account[] | undefined) =>
+        (oldAccounts ?? []).map((acc: Account) =>
+          acc.id.toString() === updatedAccount.id.toString()
+            ? updatedAccount
+            : acc
+        )
     );
     setSelectedAccount(updatedAccount);
+    setActiveModal(null);
   };
 
   const handleNavigation = (
@@ -90,7 +108,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const openTransactionModal = (
-    type: "deposit" | "withdraw" | "statement",
+    type: "deleteAccount" | "deposit" | "withdraw" | "statement",
     account: Account
   ) => {
     setSelectedAccount(account);
@@ -105,6 +123,15 @@ const DashboardPage: React.FC = () => {
     if (!activeModal) return null;
 
     switch (activeModal) {
+      case "deleteAccount":
+        if (!selectedAccount) return <p>Selecione uma conta para deletar.</p>;
+        return (
+          <DeleteAccountModal
+            account={selectedAccount}
+            onAccountDeleted={handleAccountDeleted} // <-- handler correto!
+            onClose={() => setActiveModal(null)}
+          />
+        );
       case "newAccount":
         return (
           <NewAccountForm
@@ -143,6 +170,8 @@ const DashboardPage: React.FC = () => {
 
   const getModalTitle = () => {
     switch (activeModal) {
+      case "deleteAccount":
+        return "Deletar essa conta";
       case "newAccount":
         return "Cadastrar Nova Conta";
       case "deposit":
@@ -169,10 +198,23 @@ const DashboardPage: React.FC = () => {
             <p>Visualize suas contas e realize operações.</p>
           </header>
 
-          {isLoadingAccounts && (
-            <p className={styles.loadingMessage}>Carregando contas...</p>
+          {isLoadingAccounts ||
+            (isFetching && (
+              <p className={styles.loadingMessage}>Carregando contas...</p>
+            ))}
+          {/* {error && (
+            <p className={styles.errorMessage}>{(error as Error).message}</p>
+          )} */}
+
+          {error && (
+            <pre className={styles.errorMessage}>
+              {typeof error === "string"
+                ? error
+                : error instanceof Error
+                ? error.message
+                : JSON.stringify(error)}
+            </pre>
           )}
-          {error && <p className={styles.errorMessage}>{error}</p>}
 
           {!isLoadingAccounts &&
             !error &&
@@ -200,6 +242,9 @@ const DashboardPage: React.FC = () => {
                     }}
                     onWithdraw={(account: Account) => {
                       openTransactionModal("withdraw", account);
+                    }}
+                    onDelete={(account: Account) => {
+                      openTransactionModal("deleteAccount", account);
                     }}
                   />
                 ))}

@@ -33,7 +33,7 @@ const NewAccountForm: React.FC<NewAccountFormProps> = ({
       alert(`Conta ${newAccount.numero} criada com sucesso!`);
       onClose();
     } catch (err: any) {
-      setError(err.message || "Erro ao criar conta.");
+      setError("Erro ao criar conta.");
     } finally {
       setIsLoading(false);
     }

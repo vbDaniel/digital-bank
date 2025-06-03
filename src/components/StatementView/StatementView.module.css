@@ -1,4 +1,3 @@
-
 .statementContainer {
   padding: 1rem 0;
 }
@@ -19,6 +18,25 @@
   text-align: center;
 }
 
+.transactionsList {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 400px;
+  padding-right: 8px;
+}
+
+/* Chrome, Edge, Safari */
+.transactionsList::-webkit-scrollbar {
+  width: 4px;
+  background: #e3f2fd;
+}
+
+.transactionsList::-webkit-scrollbar-thumb {
+  background: #90caf9;
+  border-radius: 4px;
+}
+
 .transactionList {
   list-style: none;
   padding: 0;
@@ -29,10 +47,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 10px 0px;
   border-bottom: 1px solid #eee;
   background-color: #fff;
-  margin-bottom: 0.5rem;
   border-radius: 4px;
 }
 
@@ -44,20 +61,23 @@
   font-size: 0.9rem;
   color: #666;
   flex-basis: 25%;
+  margin-right: 12px;
+  width: 120px;
 }
 
 .description {
   font-size: 1rem;
   color: #333;
-  flex-basis: 50%;
   text-align: left;
+  width: 100%;
 }
 
 .amount {
   font-size: 1rem;
   font-weight: 500;
-  flex-basis: 25%;
   text-align: right;
+
+  width: 100%;
 }
 
 .credit .amount {
@@ -66,4 +86,57 @@
 
 .debit .amount {
   color: #c62828; /* Red for debit */
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+}
+
+.searchInput,
+.typeSelect {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--color-primary-500);
+  border-radius: 12px;
+  background: #e6f7ff;
+  color: #222;
+  transition: box-shadow 0.2s, border 0.2s;
+  outline: none;
+  min-width: 160px;
+}
+
+.searchInput:focus,
+.typeSelect:focus {
+  box-shadow: 0 0 0 2px var(--color-secondary-500); /* Verde claro no foco */
+  background: #eafff3;
+}
+
+.typeSelect {
+  background: #e6f7ff;
+}
+
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .searchInput,
+  .typeSelect {
+    width: 100%;
+    min-width: 0;
+  }
 }

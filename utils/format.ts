@@ -40,3 +40,15 @@ export const formatTelefone = (value: string): string => {
 export const cleanCPF = (cpf: string) => {
   return cpf.replace(/[^\d]/g, "");
 };
+
+export const formatReais = (value: number | string): string => {
+  const numberValue =
+    typeof value === "number" ? value : Number(value.replace(/\D/g, "")) / 100;
+
+  return numberValue.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};

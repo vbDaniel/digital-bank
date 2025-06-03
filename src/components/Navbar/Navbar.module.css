@@ -1,17 +1,27 @@
-
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #00796b; /* Dark teal */
+  padding: 8px 2rem;
+  background-color: var(--color-primary-100);
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(49, 225, 9, 0.225);
 }
 
 .navbarBrand {
-  font-size: 1.5rem;
-  font-weight: bold;
+  width: 130px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.navbarBrand img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 20px;
 }
 
 .userInfo {
@@ -49,7 +59,7 @@
 .logoutButton {
   padding: 0.5rem 1rem;
   background-color: #ffffff;
-  color: #00796b;
+  color: var(--color-primary-700);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -58,34 +68,30 @@
 }
 
 .logoutButton:hover {
-  background-color: #e0f2f1; /* Light teal background */
-  color: #004d40; /* Darker teal text */
+  background-color: #e0f2f1;
+  color: var(--color-primary-500); /* Darker teal text */
+}
+
+.newAccountButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-secondary-500) !important;
+
+  color: var(--color-primary-950) !important;
+  font-weight: 300 !important;
+  text-transform: uppercase;
+  max-width: 140px;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
-    align-items: flex-start;
-  }
-  .navLinks {
-    flex-direction: column;
-    width: 100%;
-    margin-top: 1rem;
-  }
-  .navLinks li {
-    margin: 0.5rem 0;
-    width: 100%;
-  }
-  .navLinks button {
-    width: 100%;
-    text-align: left;
-  }
-  .logoutButton {
-    margin-top: 1rem;
-    width: 100%;
-  }
-  .userInfo {
-    margin: 0.5rem 0;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
   }
 }

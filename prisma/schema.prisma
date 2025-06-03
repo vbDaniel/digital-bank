@@ -27,7 +27,7 @@ model Conta {
   saldo     Float    @default(0)
   cliente   Cliente  @relation(fields: [clienteId], references: [id])
   clienteId Int
-  lancamentos Lancamento[]
+  lancamentos Lancamento[] @relation("ContaLancamentos")
 }
 
 model Lancamento {
@@ -35,6 +35,6 @@ model Lancamento {
   valor     Float
   tipo      TipoLancamento
   data      DateTime @default(now())
-  conta     Conta    @relation(fields: [contaId], references: [id])
+  conta     Conta    @relation("ContaLancamentos", fields: [contaId], references: [id], onDelete: Cascade)
   contaId   Int
 }

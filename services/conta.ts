@@ -19,6 +19,22 @@ export async function criarConta(clienteId: number, nome: string) {
   });
 }
 
+// Deleta uma conta pelo ID e valida se pertence ao cliente
+export async function deletarContaById(contaId: number, clienteId: number) {
+  const conta = await prisma.conta.findUnique({
+    where: { id: contaId },
+    select: { clienteId: true },
+  });
+
+  if (!conta || conta.clienteId !== clienteId) {
+    throw new Error("Conta não encontrada ou não pertence ao usuário.");
+  }
+
+  return prisma.conta.delete({
+    where: { id: contaId },
+  });
+}
+
 // Lista todas as contas de um cliente
 export async function listarContas(clienteId: number) {
   return prisma.conta.findMany({

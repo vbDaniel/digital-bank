@@ -1,0 +1,74 @@
+.btnDefault {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.btnFilled,
+.btnOutline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-primary-900);
+  font-weight: 600;
+  font-family: var(--primary-font);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 20px;
+  border-radius: 12px;
+  gap: 8px;
+  transition: 0.1s;
+}
+
+.btnFilled {
+  width: 328px;
+  background-color: var(--color-secondary-400);
+  height: 2.5rem;
+  border-color: transparent;
+}
+
+.btnFilled:hover {
+  background-color: var(--color-secondary-500);
+  cursor: pointer;
+}
+
+.btnFilled:disabled,
+.btnFilled:disabled:hover {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-600);
+  cursor: default;
+  border: none;
+}
+
+.btnOutline {
+  width: 100%;
+  height: 40px;
+  background-color: transparent;
+  line-height: 16.8px;
+  cursor: pointer;
+  border: 1px solid var(--color-primary-900);
+  text-transform: none;
+}
+
+.btnOutline:hover {
+  background-color: var(--color-secondary-100);
+  cursor: pointer;
+}
+
+.btnOutline:disabled,
+.btnOutline:disabled:hover {
+  background-color: transparent;
+  border: 1px solid var(--color-neutral-50);
+  color: var(--color-neutral-600);
+  cursor: default;
+}
+
+.icon {
+  min-width: 16px !important;
+  min-height: 16px !important;
+}

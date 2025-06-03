@@ -1,4 +1,3 @@
-
 .overlay {
   position: fixed;
   top: 0;
@@ -35,7 +34,7 @@
 .modalHeader h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #00796b; /* Dark Teal */
+  color: var(--color-primary-700);
 }
 
 .closeButton {
@@ -48,7 +47,7 @@
 }
 
 .closeButton:hover {
-    color: #333;
+  color: #333;
 }
 
 .modalBody {

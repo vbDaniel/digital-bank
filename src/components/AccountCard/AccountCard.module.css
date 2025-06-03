@@ -1,4 +1,6 @@
 .card {
+  display: flex;
+  flex-direction: column;
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -7,6 +9,8 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
   cursor: default;
+
+  gap: 20px;
 }
 
 .card[role="button"] {
@@ -19,22 +23,35 @@
 }
 
 .accountNumber {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accountNumber span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.25rem;
-  color: #00796b; /* Dark Teal */
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  color: var(--color-primary-700);
+}
+
+.deleteIcon {
+  color: var(--color-primary-700);
 }
 
 .balance {
+  display: flex;
+  align-items: center;
   font-size: 1.1rem;
   color: #333;
   margin-bottom: 0;
 }
 
 .selectHint {
-  display: block;
+  display: flex;
   font-size: 0.8rem;
-  color: #00796b;
+  color: var(--color-primary-700);
   margin-top: 0.5rem;
 }
 
@@ -44,15 +61,26 @@
 }
 
 .iconButton {
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.2rem;
-  display: flex;
-  align-items: center;
   transition: transform 0.1s;
 }
 
 .iconButton:active {
   transform: scale(0.95);
+}
+
+.buttonLabel {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  padding-left: 10px;
+}
+.iconButton:hover,
+.buttonLabel:hover {
+  text-decoration: underline;
 }

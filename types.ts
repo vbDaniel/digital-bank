@@ -3,7 +3,6 @@ export interface User {
   nome: string;
   cpf: string;
   telefone: string;
-  // Senha não é armazenada no frontend após login
 }
 
 export enum AccountType {
@@ -44,6 +43,7 @@ export interface RegistrationData {
   cpf: string;
   telefone: string;
   senha?: string; // Senha é enviada apenas no cadastro
+  contas?: AccountDTO[]; // Contas podem ser enviadas no cadastro, mas não são obrigatórias
 }
 
 export interface LoginData {

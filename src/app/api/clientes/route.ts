@@ -4,6 +4,13 @@ import prisma from "lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
+  if (req.method !== "POST") {
+    return NextResponse.json(
+      { error: "Método não permitido" },
+      { status: 405 }
+    );
+  }
+
   const { nome, cpf, telefone, senha } = await req.json();
 
   const existing = await prisma.cliente.findUnique({ where: { cpf } });

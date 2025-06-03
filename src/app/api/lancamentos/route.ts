@@ -10,8 +10,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
   try {
-    const lancamento = await criarLancamento(data, user.id);
-    return NextResponse.json(lancamento, { status: 201 });
+    const { updatedAccount, transaction } = await criarLancamento(
+      data,
+      user.id
+    );
+    return NextResponse.json({ updatedAccount, transaction }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 400 });
   }

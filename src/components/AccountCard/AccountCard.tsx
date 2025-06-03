@@ -6,9 +6,13 @@ import { Account } from "types";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"; // Extrato
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"; // Depósito
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"; // Saque
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+import { formatReais } from "utils/format";
 
 interface AccountCardProps {
   account: Account;
+  onDelete: (account: Account) => void;
   onStatement: (account: Account) => void;
   onDeposit: (account: Account) => void;
   onWithdraw: (account: Account) => void;
@@ -16,23 +20,32 @@ interface AccountCardProps {
 
 const AccountCard: React.FC<AccountCardProps> = ({
   account,
+  onDelete,
   onStatement,
   onDeposit,
   onWithdraw,
 }) => {
   return (
     <div className={styles.card}>
-      <h3 className={styles.accountNumber}>Conta: {account.numero}</h3>
-      <p className={styles.balance}>
-        Saldo: R$ {account.saldo.toFixed(2).replace(".", ",")}
-      </p>
+      <h3 className={styles.accountNumber}>
+        <span> Conta: {account.numero}</span>
+        <button
+          className={styles.iconButton}
+          title="Deletar Conta"
+          onClick={() => onDelete(account)}
+        >
+          <DeleteOutlineIcon className={styles.deleteIcon} />
+        </button>
+      </h3>
+      <p className={styles.balance}>Saldo: {formatReais(account.saldo)}</p>
       <div className={styles.actions}>
         <button
           className={styles.iconButton}
           title="Ver Extrato"
           onClick={() => onStatement(account)}
         >
-          <ReceiptLongIcon color="primary" />
+          <ReceiptLongIcon color="info" />
+          <span className={styles.buttonLabel}>Extrato</span>
         </button>
         <button
           className={styles.iconButton}
@@ -40,6 +53,7 @@ const AccountCard: React.FC<AccountCardProps> = ({
           onClick={() => onDeposit(account)}
         >
           <AddCircleOutlineIcon color="success" />
+          <span className={styles.buttonLabel}>Depositar</span>
         </button>
         <button
           className={styles.iconButton}
@@ -47,6 +61,7 @@ const AccountCard: React.FC<AccountCardProps> = ({
           onClick={() => onWithdraw(account)}
         >
           <RemoveCircleOutlineIcon color="error" />
+          <span className={styles.buttonLabel}>Sacar</span>
         </button>
       </div>
     </div>

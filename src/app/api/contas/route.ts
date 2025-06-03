@@ -5,7 +5,15 @@ import { getUserFromToken } from "utils/auth";
 
 // POST /api/contas - Criar nova conta
 export async function POST(req: NextRequest) {
+  if (req.method !== "POST") {
+    return NextResponse.json(
+      { error: "Método não permitido" },
+      { status: 405 }
+    );
+  }
+
   const user = getUserFromToken(req);
+
   if (!user)
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
@@ -23,6 +31,13 @@ export async function POST(req: NextRequest) {
 
 // GET /api/contas - Listar contas do usuário
 export async function GET(req: NextRequest) {
+  if (req.method !== "GET") {
+    return NextResponse.json(
+      { error: "Método não permitido" },
+      { status: 405 }
+    );
+  }
+
   const user = getUserFromToken(req);
   if (!user)
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });

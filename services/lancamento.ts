@@ -37,15 +37,15 @@ export async function criarLancamento(
     const novoSaldo =
       tipo === "CREDITO" ? conta.saldo + valor : conta.saldo - valor;
 
-    await tx.conta.update({
+    const updatedAccount = await tx.conta.update({
       where: { id: contaId },
       data: { saldo: novoSaldo },
     });
 
-    const lancamento = await tx.lancamento.create({
+    const transaction = await tx.lancamento.create({
       data: { valor, tipo, contaId },
     });
 
-    return lancamento;
+    return { updatedAccount, transaction };
   });
 }

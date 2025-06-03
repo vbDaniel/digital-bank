@@ -64,6 +64,7 @@ export async function apiGetStatement(
   accountId: string
 ): Promise<Transaction[]> {
   const res = await fetch(`/api/contas/${accountId}/lancamentos`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,4 +76,22 @@ export async function apiGetStatement(
   }
 
   return await res.json();
+}
+
+// Remove uma conta do usuário autenticado
+export async function apiDeleteAccount(
+  token: string,
+  accountId: string
+): Promise<void> {
+  const res = await fetch(`/api/contas/${accountId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Erro ao remover conta.");
+  }
 }

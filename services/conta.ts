@@ -39,6 +39,19 @@ export async function deletarContaById(contaId: number, clienteId: number) {
 export async function listarContas(clienteId: number) {
   return prisma.conta.findMany({
     where: { clienteId },
+    select: {
+      id: true,
+      numero: true,
+      saldo: true,
+      limite: true,
+      clienteId: true,
+    },
+  });
+}
+
+// Lista todas as contas
+export async function listarTodasContas(clienteId: number) {
+  return prisma.conta.findMany({
     select: { id: true, numero: true, saldo: true },
   });
 }

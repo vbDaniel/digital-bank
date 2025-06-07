@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       data,
       user.id
     );
+
     return NextResponse.json({ updatedAccount, transaction }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 400 });

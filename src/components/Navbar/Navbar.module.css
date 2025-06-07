@@ -24,52 +24,12 @@
   border-radius: 20px;
 }
 
-.userInfo {
-  font-size: 1rem;
-  margin: 0 1rem;
-}
-
-.navLinks {
-  list-style: none;
+.navbar > div {
   display: flex;
-  padding: 0;
-  margin: 0;
+  width: fit-content;
   align-items: center;
-}
-
-.navLinks li {
-  margin-left: 1.5rem;
-}
-
-.navLinks button {
-  color: white;
-  text-decoration: none;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem 0;
-  transition: opacity 0.2s;
-}
-
-.navLinks button:hover {
-  opacity: 0.8;
-}
-
-.logoutButton {
-  padding: 0.5rem 1rem;
-  background-color: #ffffff;
-  color: var(--color-primary-700);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.logoutButton:hover {
-  background-color: #e0f2f1;
-  color: var(--color-primary-500); /* Darker teal text */
+  gap: 36px;
+  justify-content: space-between;
 }
 
 .newAccountButton {
@@ -88,9 +48,9 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
     gap: 16px;
   }

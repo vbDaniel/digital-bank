@@ -84,3 +84,12 @@
 .buttonLabel:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+  .actions {
+    justify-content: space-between;
+  }
+  .buttonLabel {
+    display: none;
+  }
+}

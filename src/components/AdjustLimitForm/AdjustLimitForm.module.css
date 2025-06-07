@@ -1,0 +1,86 @@
+.formContainer {
+  padding: 1rem 0;
+}
+
+.formContainer p {
+  margin-bottom: 0.75rem;
+  color: #333;
+  font-size: 1rem;
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary-500); /* Darker teal for labels */
+  font-weight: 500;
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #b2dfdb; /* Light teal border */
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: var(--color-primary-700); /* Dark teal on focus */
+  box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.2);
+}
+
+.errorMessage {
+  color: #d32f2f;
+  background-color: #ffcdd2;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #d32f2f;
+  text-align: center;
+}
+
+.buttonGroup {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-grow: 1;
+}
+
+.confirmButton {
+  background-color: var(--color-primary-700);
+  color: white;
+}
+
+.confirmButton:hover {
+  background-color: var(--color-primary-700); /* Darker Teal */
+}
+
+.confirmButton:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background-color: #f1f1f1;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.cancelButton:hover {
+  background-color: #e0e0e0;
+}

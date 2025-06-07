@@ -40,6 +40,9 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
   }, [account.id, token]);
 
   const filteredTransactions = transactions.filter((tx) => {
+    if (tx.tipo.toLowerCase() === TransactionType.AJUSTE_LIMITE.toLowerCase())
+      return false;
+
     if (
       filterType !== "all" &&
       tx.tipo.toLowerCase() !== filterType.toLowerCase()
@@ -56,6 +59,64 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
 
     return false;
   });
+
+  const Item = (tx: Transaction) => {
+    let tipoLabel = "";
+    let tipoClass = "";
+    let sinal = "";
+
+    switch (tx.tipo.toLowerCase()) {
+      case TransactionType.CREDITO:
+        tipoLabel = "Crédito";
+        tipoClass = styles.credit;
+        sinal = "+ ";
+        break;
+      case TransactionType.DEBITO:
+        tipoLabel = "Débito";
+        tipoClass = styles.debit;
+        sinal = "- ";
+        break;
+      case "bonus":
+        tipoLabel = "Bônus";
+        tipoClass = styles.bonus || styles.credit;
+        sinal = "+ ";
+        break;
+      case "transferencia_debito":
+        tipoLabel = "Transferência Enviada";
+        tipoClass = styles.debit;
+        sinal = "- ";
+        break;
+      case "transferencia_credito":
+        tipoLabel = "Transferência Recebida";
+        tipoClass = styles.credit;
+        sinal = "+ ";
+        break;
+      default:
+        tipoLabel = tx.tipo;
+        tipoClass = "";
+        sinal = "";
+    }
+
+    return (
+      <li key={tx.id} className={`${styles.transactionItem} ${tipoClass}`}>
+        <span className={styles.date}>
+          {new Date(tx.data).toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })}
+        </span>
+        <span className={styles.description}>{tx.descricao || tipoLabel}</span>
+        <span className={styles.amount}>
+          {sinal}
+          {formatReais(Math.abs(tx.valor))}
+        </span>
+      </li>
+    );
+  };
 
   return (
     <div className={styles.statementContainer}>
@@ -93,37 +154,7 @@ const StatementView: React.FC<StatementViewProps> = ({ account }) => {
           ) : (
             <ul className={styles.transactionList}>
               {filteredTransactions.map((tx) => (
-                <li
-                  key={tx?.id}
-                  className={`${styles.transactionItem} ${
-                    tx.tipo.toLocaleLowerCase() === TransactionType.CREDITO
-                      ? styles.credit
-                      : styles.debit
-                  }`}
-                >
-                  <span className={styles.date}>
-                    {new Date(tx.data).toLocaleString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
-                  </span>
-                  <span className={styles.description}>
-                    {tx.descricao ||
-                      (tx.tipo.toLocaleLowerCase() === TransactionType.CREDITO
-                        ? "Crédito"
-                        : "Débito")}
-                  </span>
-                  <span className={styles.amount}>
-                    {tx.tipo.toLocaleLowerCase() === TransactionType.DEBITO
-                      ? "- "
-                      : "+ "}
-                    {formatReais(tx.valor)}
-                  </span>
-                </li>
+                <Item key={tx.id} {...tx} />
               ))}
             </ul>
           ))}

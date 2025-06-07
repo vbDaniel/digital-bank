@@ -10,6 +10,11 @@ generator client {
 enum TipoLancamento {
   CREDITO
   DEBITO
+  AJUSTE_LIMITE
+  BONUS
+  TRANSFERENCIA_DEBITO
+  TRANSFERENCIA_CREDITO
+  TAXA
 }
 
 model Cliente {

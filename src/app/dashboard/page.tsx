@@ -20,6 +20,8 @@ import { apiGetAccounts } from "./dash.utils";
 import DeleteAccountModal from "src/components/DeleteAccountModal/DeleteAccountModal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatReais } from "utils/format";
+import AdjustLimitForm from "src/components/AdjustLimitForm/AdjustLimitForm";
+import TransferForm from "src/components/TransferForm/TransferForm";
 
 type ModalType =
   | "newAccount"
@@ -27,6 +29,8 @@ type ModalType =
   | "deposit"
   | "withdraw"
   | "statement"
+  | "adjustLimit"
+  | "transfer"
   | null;
 
 const DashboardPage: React.FC = () => {
@@ -88,6 +92,28 @@ const DashboardPage: React.FC = () => {
     setActiveModal(null);
   };
 
+  const handleTransferSuccess = (
+    updatedAccount: Account,
+    destino: Account,
+    _transaction: Transaction
+  ) => {
+    queryClient.setQueryData<Account[]>(
+      ["accounts"],
+      (oldAccounts: Account[] | undefined) =>
+        (oldAccounts ?? []).map((acc: Account) => {
+          if (acc.id.toString() === updatedAccount.id.toString()) {
+            return updatedAccount;
+          }
+          if (acc.id.toString() === destino.id.toString()) {
+            return destino;
+          }
+          return acc;
+        })
+    );
+    setSelectedAccount(updatedAccount);
+    setActiveModal(null);
+  };
+
   const handleNavigation = (
     section: "accounts" | "withdraw" | "deposit" | "statement" | "newAccount"
   ) => {
@@ -109,7 +135,13 @@ const DashboardPage: React.FC = () => {
   };
 
   const openTransactionModal = (
-    type: "deleteAccount" | "deposit" | "withdraw" | "statement",
+    type:
+      | "deleteAccount"
+      | "deposit"
+      | "withdraw"
+      | "statement"
+      | "adjustLimit"
+      | "transfer",
     account: Account
   ) => {
     setSelectedAccount(account);
@@ -120,6 +152,7 @@ const DashboardPage: React.FC = () => {
     return <div className={styles.loading}>Carregando...</div>;
   }
 
+  console.log("Accounts:", accounts);
   const renderModalContent = () => {
     if (!activeModal) return null;
 
@@ -160,6 +193,25 @@ const DashboardPage: React.FC = () => {
             onClose={() => setActiveModal(null)}
           />
         );
+      case "adjustLimit":
+        if (!selectedAccount) return <p>Selecione uma conta para saque.</p>;
+        return (
+          <AdjustLimitForm
+            account={selectedAccount}
+            transactionType={TransactionType.AJUSTE_LIMITE}
+            onTransactionSuccess={handleTransactionSuccess}
+            onClose={() => setActiveModal(null)}
+          />
+        );
+      case "transfer":
+        if (!selectedAccount) return <p>Selecione uma conta para saque.</p>;
+        return (
+          <TransferForm
+            account={selectedAccount}
+            onTransferSuccess={handleTransferSuccess}
+            onClose={() => setActiveModal(null)}
+          />
+        );
       case "statement":
         if (!selectedAccount)
           return <p>Selecione uma conta para ver o extrato.</p>;
@@ -181,6 +233,10 @@ const DashboardPage: React.FC = () => {
         return "Realizar Saque";
       case "statement":
         return "Consultar Extrato";
+      case "adjustLimit":
+        return "Ajustar Limite";
+      case "transfer":
+        return "Realizar Transferência";
       default:
         return "";
     }
@@ -254,6 +310,12 @@ const DashboardPage: React.FC = () => {
                     }}
                     onDelete={(account: Account) => {
                       openTransactionModal("deleteAccount", account);
+                    }}
+                    onAdjustLimit={(account: Account) => {
+                      openTransactionModal("adjustLimit", account);
+                    }}
+                    onTransfer={(account: Account) => {
+                      openTransactionModal("transfer", account);
                     }}
                   />
                 ))}

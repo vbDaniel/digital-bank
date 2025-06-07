@@ -9,41 +9,39 @@ export enum AccountType {
   CORRENTE = "CORRENTE",
 }
 
-// Conforme DTO, para listagens e extratos
 export interface AccountDTO {
   id: string;
-  numero: string; // Formato AA-999999
-  // cpfCliente: string; // O CPF do cliente já é conhecido no contexto do cliente logado
-  saldo: number; // Saldo deve vir do backend
+  numero: string;
+  saldo: number;
+  limite: number;
+  cliente: User;
 }
 
-export interface Account extends AccountDTO {
-  // clienteId: string; // Já está implícito pelo usuário logado
-  // No frontend, podemos adicionar o nome do cliente para exibição se necessário,
-  // mas a API de contas pode retornar apenas o DTO.
-}
+export interface Account extends AccountDTO {}
 
 export enum TransactionType {
-  CREDITO = "credito", // Kept as lowercase to match usage in TransactionForm
-  DEBITO = "debito", // Kept as lowercase to match usage in TransactionForm
+  CREDITO = "credito",
+  DEBITO = "debito",
+  AJUSTE_LIMITE = "ajuste_limite",
+  BONUS = "bonus",
+  TRANSFERENCIA_CREDITO = "transferencia_credito",
+  TRANSFERENCIA_DEBITO = "transferencia_debito",
 }
 
 export interface Transaction {
   id: string;
-  // contaId: string; // Implícito pela conta selecionada
   tipo: TransactionType;
   valor: number;
-  data: string; // ISO date string
-  descricao?: string; // Opcional, para depósitos/saques pode ser "Depósito em conta" / "Saque de conta"
+  data: string;
+  descricao?: string;
 }
 
-// Para o formulário de cadastro
 export interface RegistrationData {
   nome: string;
   cpf: string;
   telefone: string;
-  senha?: string; // Senha é enviada apenas no cadastro
-  contas?: AccountDTO[]; // Contas podem ser enviadas no cadastro, mas não são obrigatórias
+  senha?: string;
+  contas?: AccountDTO[];
 }
 
 export interface LoginData {

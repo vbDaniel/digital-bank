@@ -7,6 +7,8 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"; // Extrato
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"; // Depósito
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"; // Saque
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CachedIcon from "@mui/icons-material/Cached";
 
 import { formatReais } from "utils/format";
 
@@ -16,6 +18,8 @@ interface AccountCardProps {
   onStatement: (account: Account) => void;
   onDeposit: (account: Account) => void;
   onWithdraw: (account: Account) => void;
+  onAdjustLimit: (account: Account) => void;
+  onTransfer: (account: Account) => void;
 }
 
 const AccountCard: React.FC<AccountCardProps> = ({
@@ -24,6 +28,8 @@ const AccountCard: React.FC<AccountCardProps> = ({
   onStatement,
   onDeposit,
   onWithdraw,
+  onAdjustLimit,
+  onTransfer,
 }) => {
   return (
     <div className={styles.card}>
@@ -62,6 +68,26 @@ const AccountCard: React.FC<AccountCardProps> = ({
         >
           <RemoveCircleOutlineIcon color="error" />
           <span className={styles.buttonLabel}>Sacar</span>
+        </button>
+        <button
+          className={styles.iconButton}
+          title="Ajustar Limite"
+          onClick={() => {
+            onAdjustLimit(account);
+          }}
+        >
+          <AccountBalanceWalletIcon color="primary" />
+          <span className={styles.buttonLabel}>Ajuste seu limite</span>
+        </button>
+        <button
+          className={styles.iconButton}
+          title="Ajustar Limite"
+          onClick={() => {
+            onTransfer(account);
+          }}
+        >
+          <CachedIcon color="secondary" />
+          <span className={styles.buttonLabel}>Transferir</span>
         </button>
       </div>
     </div>

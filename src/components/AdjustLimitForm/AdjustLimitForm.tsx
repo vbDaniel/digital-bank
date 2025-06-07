@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { Account, Transaction, TransactionType } from "types";
-import styles from "./TransactionForm.module.css";
+import styles from "./AdjustLimitForm.module.css";
 import { apiCreateTransaction } from "src/app/dashboard/dash.utils";
 import { formatReais } from "utils/format";
 
@@ -15,7 +15,7 @@ interface TransactionFormProps {
   onClose: () => void;
 }
 
-const TransactionForm: React.FC<TransactionFormProps> = ({
+const AdjustLimitForm: React.FC<TransactionFormProps> = ({
   account,
   transactionType,
   onTransactionSuccess,
@@ -43,25 +43,20 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       const { updatedAccount, transaction } = await apiCreateTransaction(
         token,
         account.id,
-        transactionType.toUpperCase() as "CREDITO" | "DEBITO",
+        transactionType.toUpperCase() as "AJUSTE_LIMITE",
         value
       );
 
       onTransactionSuccess(updatedAccount, transaction);
 
       alert(
-        `Operação de ${
-          transactionType === TransactionType.CREDITO ? "depósito" : "saque"
-        } de ${formatReais(value)} realizada com sucesso!`
+        `Operação de NOVO LIMITE de ${formatReais(
+          value
+        )} realizada com sucesso!`
       );
       onClose();
     } catch (err: any) {
-      setError(
-        err.message ||
-          `Erro ao realizar ${
-            transactionType === TransactionType.CREDITO ? "depósito" : "saque"
-          }.`
-      );
+      setError(err.message || "Erro desconhecido ao realizar a operação.");
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +76,12 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       <div className={styles.inputGroup}>
         <label htmlFor="amount">
           Valor do{" "}
-          {transactionType === TransactionType.CREDITO ? "Depósito" : "Saque"}:
+          {transactionType === TransactionType.CREDITO
+            ? "Depósito"
+            : transactionType === TransactionType.AJUSTE_LIMITE
+            ? "novo limite"
+            : "Saque"}
+          :
         </label>
         <input
           type="number"
@@ -106,6 +106,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             ? "Processando..."
             : transactionType === TransactionType.CREDITO
             ? "Confirmar Depósito"
+            : transactionType === TransactionType.AJUSTE_LIMITE
+            ? "Confirmar Ajuste de Limite"
             : "Confirmar Saque"}
         </button>
         <button
@@ -121,4 +123,4 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   );
 };
 
-export default TransactionForm;
+export default AdjustLimitForm;

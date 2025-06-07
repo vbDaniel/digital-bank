@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "TipoLancamento" ADD VALUE 'AJUSTE_LIMITE';
+
+-- AlterTable
+ALTER TABLE "Conta" ADD COLUMN     "limite" DOUBLE PRECISION NOT NULL DEFAULT 0;

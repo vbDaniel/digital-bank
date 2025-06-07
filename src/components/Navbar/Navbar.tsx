@@ -15,17 +15,19 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   return (
     <nav className={styles.navbar}>
-      <div className={styles.navbarBrand}>
-        <img src={LogoDigital.src} alt="Logo" />
-      </div>
+      <div>
+        <div className={styles.navbarBrand}>
+          <img src={LogoDigital.src} alt="Logo" />
+        </div>
 
-      <Button
-        onClick={() => onNavigate("newAccount")}
-        variant="filled"
-        classStyle={styles.newAccountButton}
-      >
-        Nova Conta
-      </Button>
+        <Button
+          onClick={() => onNavigate("newAccount")}
+          variant="filled"
+          classStyle={styles.newAccountButton}
+        >
+          Nova Conta
+        </Button>
+      </div>
 
       <ProfileConfig />
     </nav>

@@ -19,6 +19,7 @@ import styles from "./page.module.css";
 import { apiGetAccounts } from "./dash.utils";
 import DeleteAccountModal from "src/components/DeleteAccountModal/DeleteAccountModal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatReais } from "utils/format";
 
 type ModalType =
   | "newAccount"
@@ -185,6 +186,12 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  // Soma o saldo de todas as contas
+  const totalSaldoAccounts = accounts.reduce(
+    (total, acc) => total + (typeof acc.saldo === "number" ? acc.saldo : 0),
+    0
+  );
+
   return (
     <>
       <Head>
@@ -194,17 +201,19 @@ const DashboardPage: React.FC = () => {
         <Navbar onNavigate={handleNavigation} />
         <main className={styles.mainContent}>
           <header className={styles.pageHeader}>
-            <h2>Minhas Contas</h2>
-            <p>Visualize suas contas e realize operações.</p>
+            <div>
+              <h2>Minhas Contas</h2>
+              <p>Visualize suas contas e realize operações.</p>
+            </div>
+            <span>{`Total de todas as contas ${formatReais(
+              totalSaldoAccounts
+            )}`}</span>
           </header>
 
           {isLoadingAccounts ||
             (isFetching && (
               <p className={styles.loadingMessage}>Carregando contas...</p>
             ))}
-          {/* {error && (
-            <p className={styles.errorMessage}>{(error as Error).message}</p>
-          )} */}
 
           {error && (
             <pre className={styles.errorMessage}>

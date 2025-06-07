@@ -14,6 +14,11 @@
 }
 
 .pageHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--color-primary-700);
@@ -26,6 +31,11 @@
 }
 
 .pageHeader p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.pageHeader span {
   font-size: 1.1rem;
   color: #555;
 }

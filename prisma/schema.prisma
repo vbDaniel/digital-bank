@@ -26,6 +26,7 @@ model Conta {
   numero    String   @unique
   saldo     Float    @default(0)
   cliente   Cliente  @relation(fields: [clienteId], references: [id])
+  limite    Float    @default(0)
   clienteId Int
   lancamentos Lancamento[] @relation("ContaLancamentos")
 }
